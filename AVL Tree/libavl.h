@@ -1,9 +1,9 @@
-typedef struct tNo {
+typedef struct node_s {
 	int chave;
-	tNo *esq;
-	tNo *dir;
-	tNo *pai;
-} tNo;
+	struct node_s *esq;
+	struct node_s *dir;
+	struct node_s *pai;
+} node_t;
 
 /*
 cria_nodo
