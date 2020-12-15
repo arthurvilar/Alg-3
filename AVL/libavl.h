@@ -1,3 +1,6 @@
+#ifndef __AVL__
+#define __AVL__
+
 /* Retorna o valor mais alto entre dois inteiros */
 #define MAX(a, b) ((a > b) ? (a) : (b))
 /* Retorna a altura da árvore */
@@ -7,16 +10,21 @@
 
 typedef struct nodo_s {
     int chave;
+    int altura;
     struct nodo_s *esq;
     struct nodo_s *dir;
     struct nodo_s *pai;
-
-    int altura;
 } nodo_t;
 
-nodo_t* nodo_inicia(int chave);
-void nodo_destroi(nodo_t *nodo);
+/*=-=-=-implementadas-=-=-=*/
 
-nodo_t* nodo_rotaciona_dir(nodo_t *nodo);
-nodo_t* nodo_rotaciona_esq(nodo_t *nodo);
-nodo_t* nodo_insere(nodo_t *nodo, int chave);
+nodo_t *inicia_nodo(int chave);
+
+/*=-=-=-ainda nao implementadas-=-=-=*/
+
+/*nodo_t *insere_nodo(nodo_t *nodo, int chave);*/
+/*void destroi_nodo(nodo_t *nodo);*/
+/*nodo_t *rotaciona_dir(nodo_t *nodo);*/
+/*nodo_t *rotaciona_esq(nodo_t *nodo);*/
+
+#endif
