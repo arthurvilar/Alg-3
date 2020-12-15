@@ -18,11 +18,11 @@ typedef struct nodo_s {
 
 /*=-=-=-implementadas-=-=-=*/
 nodo_t *inicia_nodo(int chave);
+nodo_t *rotaciona_dir(nodo_t *nodo);
+nodo_t *rotaciona_esq(nodo_t *nodo);
 
 /*=-=-=-ainda nao implementadas-=-=-=*/
 /*void destroi_nodo(nodo_t *nodo);*/
 /*nodo_t *insere_nodo(nodo_t *nodo, int chave);*/
-/*nodo_t *rotaciona_dir(nodo_t *nodo);*/
-/*nodo_t *rotaciona_esq(nodo_t *nodo);*/
 
 #endif
