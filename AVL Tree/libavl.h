@@ -6,6 +6,6 @@ typedef struct node_s {
 } node_t;
 
 /*
-cria_nodo
+    cria_nodo
 
 */
