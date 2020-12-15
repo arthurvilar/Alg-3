@@ -1,5 +1,5 @@
-#ifndef __AVL__
-#define __AVL__
+#ifndef __LIBAVL_H__
+#define __LIBAVL_H__
 
 /* Retorna o valor mais alto entre dois inteiros */
 #define MAX(a, b) ((a > b) ? (a) : (b))
@@ -17,13 +17,11 @@ typedef struct nodo_s {
 } nodo_t;
 
 /*=-=-=-implementadas-=-=-=*/
-
 nodo_t *inicia_nodo(int chave);
 
 /*=-=-=-ainda nao implementadas-=-=-=*/
-
-/*nodo_t *insere_nodo(nodo_t *nodo, int chave);*/
 /*void destroi_nodo(nodo_t *nodo);*/
+/*nodo_t *insere_nodo(nodo_t *nodo, int chave);*/
 /*nodo_t *rotaciona_dir(nodo_t *nodo);*/
 /*nodo_t *rotaciona_esq(nodo_t *nodo);*/
 
