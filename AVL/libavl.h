@@ -1,19 +1,11 @@
 #ifndef __LIBAVL_H__
 #define __LIBAVL_H__
 
-/* Retorna o valor mais alto entre dois inteiros */
-#define MAX(a, b) ((a > b) ? (a) : (b))
-/* Retorna a altura da árvore */
-#define ALTURA(nodo) ((nodo) ? nodo->altura : 0) 
-/* Retorna fator balanceamento do nodo */
-#define FATOR(nodo) ((nodo) ? ALTURA(nodo->esq) - ALTURA(nodo->dir) ? 0)
-
 typedef struct nodo_s {
-    int chave;
-    int altura;
-    struct nodo_s *esq;
-    struct nodo_s *dir;
-    struct nodo_s *pai;
+    int chave;          /* valor deste nodo */
+    int altura;         /* altura deste nodo */
+    struct nodo_s *esq; /* nodo esquerdo deste nodo */
+    struct nodo_s *dir; /* nodo direito deste nodo*/
 } nodo_t;
 
 /*=-=-=-implementadas-=-=-=*/
