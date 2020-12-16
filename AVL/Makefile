@@ -3,7 +3,7 @@ EXEC   := myavl
 CC	   := gcc
 CFLAGS := -Wall -Werror -Wextra -pedantic -g
 
-.PHONY : all run clean
+.PHONY : all clean
 
 all : $(EXEC)
 
