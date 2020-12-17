@@ -4,14 +4,12 @@
 
 int main() {
 
-    nodo_t *raiz = NULL;
-    raiz = inicia_nodo(25);
-    insere_nodo(raiz, 30);
-    insere_nodo(raiz, 5);
-    insere_nodo(raiz, 10);
-    insere_nodo(raiz, 1);
-    insere_nodo(raiz, 27);
-    insere_nodo(raiz, 33);
+    nodo_t *raiz = insere_nodo(NULL, 10);
+    raiz = insere_nodo(raiz, 20);
+    raiz = insere_nodo(raiz, 30);
+    raiz = insere_nodo(raiz, 40);
+    raiz = insere_nodo(raiz, 50);
+    raiz = insere_nodo(raiz, 25);
 
     /*TESTA AS IMPRESSOES*/
     printf("Em ordem: ");
