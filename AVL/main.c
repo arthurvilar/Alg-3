@@ -10,9 +10,11 @@ int main()
 {
     nodo_t *raiz = NULL;
     nodo_t* (*p_funcao)(nodo_t *nodo, int chave);
-
+    int inteiro;
     char c;
     char str_inteiro[TAM_BUFFER];
+
+    /* Percorre a entrada e faz a inserção ou remoção do nodo */
     while (EOF != (c = getchar())){
        switch(c){
        case 'i':
@@ -28,10 +30,12 @@ int main()
        
        /* Obtem valor da chave como str e converte para o tipo int */
        fgets(str_inteiro, TAM_BUFFER-1, stdin);
-       int inteiro = strtol(str_inteiro, NULL, 10);
+       inteiro = strtol(str_inteiro, NULL, 10);
 
        raiz = (*p_funcao)(raiz, inteiro);
     }
 
     em_ordem(raiz);
+
+    return EXIT_SUCCESS;
 }

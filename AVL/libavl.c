@@ -4,6 +4,7 @@
 #include "libavl.h"
 
 
+/* retorna a altura do nodo */
 static int
 _altura(nodo_t *nodo)
 {
@@ -28,6 +29,7 @@ _nivel(nodo_t *nodo)
     return nivel;
 }
 
+/* aloca espaço, inicia ponteiros e retorna o nodo */
 static nodo_t*
 _inicia_nodo(int chave)
 {
@@ -44,6 +46,7 @@ _inicia_nodo(int chave)
     return novo_nodo;
 }
 
+/* função de rotação para a direita vista em aula */
 static nodo_t*
 _rotaciona_dir(nodo_t *nodo)
 {
@@ -61,6 +64,7 @@ _rotaciona_dir(nodo_t *nodo)
     return tmp;
 }
 
+/* função de rotação para a esquerda vista em aula */
 static nodo_t*
 _rotaciona_esq(nodo_t *nodo)
 {
@@ -78,6 +82,7 @@ _rotaciona_esq(nodo_t *nodo)
     return tmp;
 }
 
+/* faz o auto balanceamento da arvore, retorna o novo nodo raiz */
 static nodo_t*
 _ajusta_avl(nodo_t *nodo, int chave)
 {
@@ -107,6 +112,7 @@ _ajusta_avl(nodo_t *nodo, int chave)
             nodo_ajuste->pai->dir = nodo_ajuste;
     }
 
+    /* atualiza o fb */
     nodo_ajuste->fb = 0;
     nodo_ajuste->esq->fb = FATOR(nodo_ajuste->esq);
     nodo_ajuste->dir->fb = FATOR(nodo_ajuste->dir);
@@ -114,6 +120,7 @@ _ajusta_avl(nodo_t *nodo, int chave)
     return nodo_ajuste;
 }
 
+/* faz a busca normal de bst e retorna o nodo se achou */
 nodo_t*
 busca(nodo_t *nodo, int chave) 
 {
@@ -127,6 +134,7 @@ busca(nodo_t *nodo, int chave)
         return busca(nodo->dir, chave);
 }
 
+/* retorna o nodo de menor valor */
 nodo_t*
 min(nodo_t *nodo)
 {
@@ -136,6 +144,7 @@ min(nodo_t *nodo)
         return min(nodo->esq);
 }
 
+/* retorna o nodo de maior valor */
 nodo_t *
 max(nodo_t *nodo)
 {
@@ -145,6 +154,7 @@ max(nodo_t *nodo)
         return max(nodo->dir);
 }
 
+/* faz a inserção de um novo nodo */
 nodo_t*
 insere_nodo(nodo_t *nodo, int chave)
 {
@@ -160,7 +170,7 @@ insere_nodo(nodo_t *nodo, int chave)
     }
 
     /* calcula o fator de balanceamento para checar
-     * se esta desbalanceado */
+       se esta desbalanceado */
     nodo->fb = FATOR(nodo);
 
     /* balancear sub-árvore se estiver desbalanceada */
@@ -170,6 +180,7 @@ insere_nodo(nodo_t *nodo, int chave)
     return nodo;
 }
 
+/* faz a remoção de um nodo */
 nodo_t*
 remove_nodo(nodo_t *nodo, int chave)
 {
@@ -177,29 +188,31 @@ remove_nodo(nodo_t *nodo, int chave)
 
     /*-----FAZ A REMOÇÃO----*/
 
+    /* chave menor continua a busca na esquerda */
     if (chave < nodo->chave) {
-        /* chave menor continua a busca na esquerda */
         nodo->esq = remove_nodo(nodo->esq, chave);
+    
+    /* chave maior continua a busca na direita */
     } else if (chave > nodo->chave) {
-        /* chave maior continua a busca na direita */
         nodo->dir = remove_nodo(nodo->dir, chave);
+    
+    /* chave igual a do nodo (achou o nodo) faz a remoção */
     } else {
-        /* chave igual a do nodo (achou o nodo) faz a remoção */
+        /* nodo possui zero ou um filho */
         if ((NULL == nodo->esq) || (NULL == nodo->dir)){
-            /* nodo possui zero ou um filho */
             nodo_t *tmp = nodo->esq ? nodo->esq : nodo->dir;
-            if (NULL == tmp){ /* sem filho */
+            
+            if (NULL == tmp){   /* sem filho */
                 tmp = nodo;
                 nodo = NULL;
-            } else { /* com um filho */
-                /* @todo se não funcionar tem que arrumar
-                 * os ponteiros de pai e filho manualmente */
-                nodo = tmp;
             }
+            else                /* com um filho */
+                nodo = tmp;
 
             free(tmp);
+
+        /* nodo possui dois filhos */
         } else {
-            /* nodo com dois filhos */
             nodo_t *sucessor = min(nodo->dir);
 
             nodo->chave = sucessor->chave;
@@ -230,6 +243,9 @@ remove_nodo(nodo_t *nodo, int chave)
     return nodo;
 }
 
+/* -=-=-= FUNÇÕES DE UTILIDADE PARA TESTAR SE É AVL =-=-=- */
+
+/* faz impressão da árvore pre-ordem */
 void 
 pre_ordem(nodo_t *nodo)
 {
@@ -240,6 +256,7 @@ pre_ordem(nodo_t *nodo)
     }
 }
 
+/* faz impressão da árvore em-ordem */
 void 
 em_ordem(nodo_t *nodo)
 {
@@ -250,16 +267,7 @@ em_ordem(nodo_t *nodo)
     }
 }
 
-void 
-fb_ordem(nodo_t *nodo)
-{
-    if (nodo != NULL){
-        fb_ordem(nodo->esq);
-        printf("%d:\t%d,%d\n", nodo->fb, nodo->chave, _nivel(nodo));
-        fb_ordem(nodo->dir);
-    }
-}
-
+/* faz impressão da árvore pos-ordem */
 void 
 pos_ordem(nodo_t *nodo)
 {
@@ -267,5 +275,16 @@ pos_ordem(nodo_t *nodo)
         pos_ordem(nodo->esq);
         pos_ordem(nodo->dir);
         printf("%d,%d\n", nodo->chave, _nivel(nodo));
+    }
+}
+
+/* faz impressão dos fatores de balanceamento de cada nodo em-ordem */
+void 
+fb_ordem(nodo_t *nodo)
+{
+    if (nodo != NULL){
+        fb_ordem(nodo->esq);
+        printf("%d:\t%d,%d\n", nodo->fb, nodo->chave, _nivel(nodo));
+        fb_ordem(nodo->dir);
     }
 }

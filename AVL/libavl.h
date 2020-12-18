@@ -25,15 +25,34 @@ typedef struct nodo_s {
     struct nodo_s *pai;
 } nodo_t;
 
+
 /*=-=-=-implementadas-=-=-=*/
+
+/* faz a busca normal de bst e retorna o nodo se achou */
 nodo_t *busca(nodo_t *nodo, int chave);
+
+/* retorna o nodo de menor valor */
 nodo_t *min(nodo_t *nodo);
+
+/* retorna o nodo de maior valor */
 nodo_t *max(nodo_t *nodo);
+
+/* faz a inserção de um novo nodo */
 nodo_t *insere_nodo(nodo_t *nodo, int chave);
-nodo_t *remove_nodo(nodo_t *nodo, int chave); 
+
+/* faz a remoção de um nodo */
+nodo_t *remove_nodo(nodo_t *nodo, int chave);
+
+/* faz impressão da árvore pre-ordem */
 void pre_ordem(nodo_t *nodo);
+
+/* faz impressão da árvore em-ordem */
 void em_ordem(nodo_t *nodo);
+
+/* faz impressão da árvore pos-ordem */
 void pos_ordem(nodo_t *nodo);
+
+/* faz impressão dos fatores de balanceamento de cada nodo em-ordem */
 void fb_ordem(nodo_t *nodo);
 
 /* funções de uso interno
