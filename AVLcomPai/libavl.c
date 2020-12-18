@@ -2,25 +2,14 @@
 #include <stdlib.h>
 #include "libavl.h"
 
-/* implementação alternativa de assert com a funcionalidade
- * extra de acrescentar texto para fácil diagnóstico */
-#define DEBUG_ASSERT(expr, msg) \
-do { \
-    if (!(expr)){ \
-        fprintf(stderr, "[%s:%d] %s()\n\tERRO:\t" \
-                        "\tDetectado:\t%s\n" \
-                        "\tEsperado:\t%s\n", \
-                        __FILE__, __LINE__, __func__, \
-                        msg, #expr); \
-        abort(); \
-    } \
-} while(0)
+/* retorna fator balanceamento do nodo */
+#define FATOR(nodo) ((nodo) ? (altura(nodo->esq) - altura(nodo->dir)) : 0)
 
 
 nodo_t*
 inicia_nodo(int chave)
 {
-    nodo_t *novo_nodo = malloc(sizeof(nodo_t));
+    nodo_t *novo_nodo = malloc(sizeof *novo_nodo);
     DEBUG_ASSERT(NULL != novo_nodo, "Sem memória suficiente");
 
     novo_nodo->esq = NULL;
@@ -36,29 +25,22 @@ inicia_nodo(int chave)
 int
 altura(nodo_t *nodo)
 {
-    int h_esq, h_dir;
+    if (NULL == nodo) return -1;
 
-    if(nodo == NULL) return -1;
+    int h_esq = altura(nodo->esq);
+    int h_dir = altura(nodo->dir);
 
-    h_esq = altura(nodo->esq);
-    h_dir = altura(nodo->dir);
-
-    if(h_esq > h_dir)
-        return (h_esq + 1);
-    else
-        return (h_dir + 1);
+    return 1 + (h_esq > h_dir ? h_esq : h_dir);
 }
 
 nodo_t*
 busca(nodo_t *nodo, int chave) 
 {
-    if(nodo == NULL)
-        return NULL;
+    if (NULL == nodo) return NULL;
 
-    if(nodo->chave == chave)
-        return nodo;
+    if (chave == nodo->chave) return nodo;
 
-    if(chave < nodo->chave)
+    if (chave < nodo->chave)
         return busca(nodo->esq, chave);
     else
         return busca(nodo->dir, chave);
@@ -67,7 +49,7 @@ busca(nodo_t *nodo, int chave)
 nodo_t*
 min(nodo_t *nodo)
 {
-    if(nodo->esq == NULL)
+    if (NULL == nodo->esq)
         return nodo;
     else
         return min(nodo->esq);
@@ -76,7 +58,7 @@ min(nodo_t *nodo)
 nodo_t *
 max(nodo_t *nodo)
 {
-    if (nodo->dir == NULL)
+    if (NULL == nodo->dir)
         return nodo;
     else
         return max(nodo->dir);
@@ -108,7 +90,7 @@ rotaciona_esq(nodo_t *nodo)
     tmp->pai = nodo->pai;
     nodo->pai = tmp;
 
-    if(tmp->esq != NULL)
+    if (tmp->esq != NULL)
         tmp->esq->pai = nodo;
 
     tmp->esq = nodo;
@@ -119,57 +101,59 @@ rotaciona_esq(nodo_t *nodo)
 nodo_t*
 ajusta_avl(nodo_t *nodo, int chave)
 {
-    nodo_t *n_ajuste;
+    nodo_t *nodo_ajuste;
 
-    //4 casos de desbalanceamento
+    /* 4 casos de desbalanceamento */
 
-    //esquerda esquerda
+    /* caso esq-esq ou esq-dir */
     if (nodo->fb > 1){ 
-        if(chave > nodo->esq->chave) //esquerda direita
+        if (chave > nodo->esq->chave) /* caso esq-dir */
             nodo->esq = rotaciona_esq(nodo->esq);
-        n_ajuste = rotaciona_dir(nodo);
+        nodo_ajuste = rotaciona_dir(nodo);
     }
 
-    //direita direita
+    /* caso dir-dir ou dir-esq */
     if (nodo->fb < -1){ 
-        if(chave < nodo->dir->chave) //direita esquerda
+        if (chave < nodo->dir->chave) /* caso dir-esq */
             nodo->dir = rotaciona_dir(nodo->dir);
-        n_ajuste = rotaciona_esq(nodo);
+        nodo_ajuste = rotaciona_esq(nodo);
     }
 
-    //arruma o nodo pai
-    if(n_ajuste->pai != NULL){
-        if(n_ajuste->pai->esq == nodo)
-            n_ajuste->pai->esq = n_ajuste;
+    /* arruma o nodo pai */
+    if(nodo_ajuste->pai != NULL){
+        if(nodo == nodo_ajuste->pai->esq)
+            nodo_ajuste->pai->esq = nodo_ajuste;
         else
-            n_ajuste->pai->dir = n_ajuste;
+            nodo_ajuste->pai->dir = nodo_ajuste;
     }
 
-    n_ajuste->fb = 0;
-    n_ajuste->esq->fb = altura(n_ajuste->esq->esq) - altura(n_ajuste->esq->dir);
-    n_ajuste->dir->fb = altura(n_ajuste->dir->esq) - altura(n_ajuste->dir->dir);
+    nodo_ajuste->fb = 0;
+    nodo_ajuste->esq->fb = FATOR(nodo_ajuste->esq);
+    nodo_ajuste->dir->fb = FATOR(nodo_ajuste->dir);
 
-    return n_ajuste;
+    return nodo_ajuste;
 }
 
 nodo_t*
 insere_nodo(nodo_t *nodo, int chave)
 {
-    //inserção normal BST
-    if(nodo == NULL)
-        return inicia_nodo(chave);
+    /* inserção normal BST */
+    if (NULL == nodo) return inicia_nodo(chave);
 
-    if(chave < nodo->chave){
+    if (chave < nodo->chave){
         nodo->esq = insere_nodo(nodo->esq, chave);
         nodo->esq->pai = nodo;
-    }else{
+    } else {
         nodo->dir = insere_nodo(nodo->dir, chave);
         nodo->dir->pai = nodo;
     }
-    //calcula o fator de balanceamento para checar se esta desbalanceado
-    nodo->fb = altura(nodo->esq) - altura(nodo->dir);
 
-    if(nodo->fb == 2 || nodo->fb == -2)
+    /* calcula o fator de balanceamento para checar
+     * se esta desbalanceado */
+    nodo->fb = FATOR(nodo);
+
+    /* balancear sub-árvore se estiver desbalanceada */
+    if ((nodo->fb > 1) || (nodo->fb < -1))
         nodo = ajusta_avl(nodo, chave);
 
     return nodo;
@@ -178,39 +162,33 @@ insere_nodo(nodo_t *nodo, int chave)
 nodo_t*
 remove_nodo(nodo_t *nodo, int chave)
 {
-    if(nodo == NULL)
-        return nodo;
+    if (NULL == nodo) return nodo;
 
     /*-----FAZ A REMOÇÃO----*/
 
-    //se chave menor continua a busca na esquerda
-    if(chave < nodo->chave)
+    if (chave < nodo->chave) {
+        /* chave menor continua a busca na esquerda */
         nodo->esq = remove_nodo(nodo->esq, chave);
-
-    //se chave maior continua a busca na direita
-    else if(chave > nodo->chave)
+    } else if (chave > nodo->chave) {
+        /* chave maior continua a busca na direita */
         nodo->dir = remove_nodo(nodo->dir, chave);
-
-    //se chave igual a do nodo (achou o nodo) faz a remoção
-    else{
-        //nodo com zero ou um filho
-        if((nodo->esq == NULL) || (nodo->dir) == NULL){
+    } else {
+        /* chave igual a do nodo (achou o nodo) faz a remoção */
+        if ((NULL == nodo->esq) || (NULL == nodo->dir)){
+            /* nodo possui zero ou um filho */
             nodo_t *tmp = nodo->esq ? nodo->esq : nodo->dir;
-
-            //sem filho
-            if(tmp == NULL){
+            if (NULL == tmp){ /* sem filho */
                 tmp = nodo;
                 nodo = NULL;
-            }
-            //com um filho
-            else{
-                *nodo = *tmp; //*****SE NAO FUNCIONAR TEM QUE ARRUMAR OS PONTEIROS DE PAI E FILHO MANUALMENTE
+            } else { /* com um filho */
+                /* @todo se não funcionar tem que arrumar
+                 * os ponteiros de pai e filho manualmente */
+                *nodo = *tmp;
             }
 
             free(tmp);
-        }
-        //nodo com dois filhos
-        else{
+        } else {
+            /* nodo com dois filhos */
             nodo_t *sucessor = min(nodo->dir);
 
             nodo->chave = sucessor->chave;
@@ -220,24 +198,20 @@ remove_nodo(nodo_t *nodo, int chave)
 
     /*-----FAZ O BALANCEAMENTO----*/
 
-    nodo->fb = altura(nodo->esq) - altura(nodo->dir);
+    nodo->fb = FATOR(nodo);
 
-    if(nodo->fb == 2 || nodo->fb == -2){
-        if(nodo->fb > 1 && (altura(nodo->esq->esq) - altura(nodo->esq->dir) >= 0))
-            return rotaciona_dir(nodo);
-
-        else if(nodo->fb > 1 && (altura(nodo->esq->esq) - altura(nodo->esq->dir) < 0)){
+    /* caso esq-esq ou esq-dir */
+    if (nodo->fb > 1){
+        if (FATOR(nodo->esq) < 0) /* caso esq-dir */
             nodo->esq = rotaciona_esq(nodo->esq);
-            return rotaciona_dir(nodo);
-        }
+        return rotaciona_dir(nodo);
+    }
 
-        if(nodo->fb < -1 && (altura(nodo->dir->esq) - altura(nodo->dir->dir) <= 0))
-            return rotaciona_dir(nodo);
-
-        else if(nodo->fb < -1 && (altura(nodo->dir->esq) - altura(nodo->dir->dir) > 0)){
+    /* caso dir-dir ou dir-esq */
+    if (nodo->fb < -1){
+        if (FATOR(nodo->dir) > 0) /* caso dir-esq */
             nodo->dir = rotaciona_dir(nodo->dir);
-            return rotaciona_esq(nodo);
-        }
+        return rotaciona_dir(nodo);
     }
 
     return nodo;
@@ -246,7 +220,7 @@ remove_nodo(nodo_t *nodo, int chave)
 void 
 pre_ordem(nodo_t *nodo)
 {
-    if(nodo != NULL){
+    if (nodo != NULL){
         printf("%d ", nodo->chave);
         pre_ordem(nodo->esq);
         pre_ordem(nodo->dir);
@@ -256,7 +230,7 @@ pre_ordem(nodo_t *nodo)
 void 
 em_ordem(nodo_t *nodo)
 {
-    if(nodo != NULL){
+    if (nodo != NULL){
         em_ordem(nodo->esq);
         printf("%d ", nodo->chave);
         em_ordem(nodo->dir);
@@ -266,8 +240,7 @@ em_ordem(nodo_t *nodo)
 void 
 fb_ordem(nodo_t *nodo)
 {
-    if (nodo != NULL)
-    {
+    if (nodo != NULL){
         fb_ordem(nodo->esq);
         printf("%d ", nodo->fb);
         fb_ordem(nodo->dir);
@@ -277,7 +250,7 @@ fb_ordem(nodo_t *nodo)
 void 
 pos_ordem(nodo_t *nodo)
 {
-    if(nodo != NULL){
+    if (nodo != NULL){
         pos_ordem(nodo->esq);
         pos_ordem(nodo->dir);
         printf("%d ", nodo->chave);

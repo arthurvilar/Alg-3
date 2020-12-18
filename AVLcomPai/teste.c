@@ -3,9 +3,9 @@
 #include "libavl.h"
 
 int main() {
-    
+  
     nodo_t *raiz = NULL;
-    
+
     raiz = insere_nodo(raiz, 10);
     raiz = insere_nodo(raiz, 20);
     raiz = insere_nodo(raiz, 30);
@@ -24,17 +24,17 @@ int main() {
     pos_ordem(raiz);
 
     /*FATOR DE BALANCEAMENTO*/
-    printf("\n\nFB em ordem: ");
+    printf("\nFB em ordem: ");
     fb_ordem(raiz);
 
     /*TESTA A BUSCA*/
-    if(busca(raiz, 40) != NULL)
-        printf("\n\nbusca [40] encontrado\n");
+    if (busca(raiz, 40) != NULL)
+        printf("\n\nbusca [40] encontrado");
 
     /*TESTA MIN E MAX*/
     nodo_t *menor = min(raiz);
     nodo_t *maior = max(raiz);
-    printf("\nMenor valor: %d\nMaior valor: %d\n", menor->chave, maior->chave);
+    printf("\nMenor valor: %d\nMaior valor: %d", menor->chave, maior->chave);
 
     /*TESTA REMOÇÃO*/
     printf("\n\nRemovendo o 40...\n");
@@ -49,7 +49,7 @@ int main() {
     printf("\nPos ordem: ");
     pos_ordem(raiz);
 
-    printf("\n\nFB em ordem: ");
+    printf("\nFB em ordem: ");
     fb_ordem(raiz);
 
     if (busca(raiz, 40) != NULL)
@@ -57,7 +57,5 @@ int main() {
     else
         printf("\n\nbusca [40] não encontrado\n");
 
-    printf("\n");
-
-    return 1;
+    return EXIT_SUCCESS;
 }

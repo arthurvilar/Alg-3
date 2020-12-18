@@ -1,12 +1,21 @@
-#ifndef __LIBAVL_H__
-#define __LIBAVL_H__
+#ifndef _LIBAVL_H_
+#define _LIBAVL_H_
 
-/* Retorna o valor mais alto entre dois inteiros */
-#define MAX(a, b) ((a > b) ? (a) : (b))
-/* Retorna a altura da árvore */
-#define ALTURA(nodo) ((nodo) ? nodo->altura : 0) 
-/* Retorna fator balanceamento do nodo */
-#define FATOR(nodo) ((nodo) ? ALTURA(nodo->esq) - ALTURA(nodo->dir) ? 0)
+
+/* implementação alternativa de assert com a funcionalidade
+ * extra de acrescentar texto para fácil diagnóstico */
+#define DEBUG_ASSERT(expr, msg) \
+do { \
+    if (!(expr)){ \
+        fprintf(stderr, "[%s:%d] %s()\n\tERRO:\t" \
+                        "\tDetectado:\t%s\n" \
+                        "\tEsperado:\t%s\n", \
+                        __FILE__, __LINE__, __func__, \
+                        msg, #expr); \
+        abort(); \
+    } \
+} while(0)
+
 
 typedef struct nodo_s {
     int chave;

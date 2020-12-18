@@ -1,11 +1,17 @@
+EXEC   := myavl
+
 CC	   := gcc
 CFLAGS := -Wall -Werror -Wextra -pedantic -g
 
-.PHONY : all run clean
+.PHONY : all clean
 
-all : run
+all : $(EXEC)
 
-run : libavl.o
+$(EXEC) : libavl.o teste.o
+	$(CC) $(CFLAGS) -o $@ $^
 
 clean :
-	rm -f run *.o
+	rm -f $(EXEC)
+
+purge : clean
+	rm -f *.o
