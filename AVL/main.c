@@ -1,36 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include "libavl.h"
 
-int main() {
+#define TAM_BUFFER 15
 
-    nodo_t *raiz = insere_nodo(NULL, 10);
-    raiz = insere_nodo(raiz, 20);
-    raiz = insere_nodo(raiz, 30);
-    raiz = insere_nodo(raiz, 40);
-    raiz = insere_nodo(raiz, 50);
-    raiz = insere_nodo(raiz, 25);
+int main()
+{
+    nodo_t *raiz = NULL;
+    nodo_t* (*p_funcao)(nodo_t *nodo, int chave);
 
-    /*TESTA AS IMPRESSOES*/
-    printf("Em ordem: ");
+    char c;
+    char str_inteiro[TAM_BUFFER];
+    while (EOF != (c = getchar())){
+       switch(c){
+       case 'i':
+           p_funcao = &insere_nodo;
+           break;
+       case 'r':
+           p_funcao = &remove_nodo;
+           break;
+       default:
+           fprintf(stderr, "Entrada desconhecida: '%c'\n", c);
+           return EXIT_FAILURE;
+       }
+       
+       /* Obtem valor da chave como str e converte para o tipo int */
+       fgets(str_inteiro, TAM_BUFFER-1, stdin);
+       int inteiro = strtol(str_inteiro, NULL, 10);
+
+       raiz = (*p_funcao)(raiz, inteiro);
+    }
+
     em_ordem(raiz);
-
-    printf("\nPre ordem: ");
-    pre_ordem(raiz);
-
-    printf("\nPos ordem: ");
-    pos_ordem(raiz);
-
-    /*TESTA A BUSCA*/
-    if(busca(raiz, 10) != NULL)
-        printf("\n\nbusca [10] encontrado\n");
-
-    /*TESTA MIN E MAX*/
-    nodo_t *menor = min(raiz);
-    nodo_t *maior = max(raiz);
-    printf("\nMenor valor: %d\nMaior valor: %d\n", menor->chave, maior->chave);
-
-    printf("\n");
-
-    return 1;
 }
