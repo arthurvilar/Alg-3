@@ -7,7 +7,7 @@ CFLAGS := -Wall -Werror -Wextra -pedantic -g
 
 all : $(EXEC)
 
-$(EXEC) : libavl.o main.o
+$(EXEC) : libavl.o teste.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean :
