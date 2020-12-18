@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include "libavl.h"
 
-int main() {
-  
+int main()
+{
     nodo_t *raiz = NULL;
 
     raiz = insere_nodo(raiz, 10);
@@ -11,20 +11,21 @@ int main() {
     raiz = insere_nodo(raiz, 30);
     raiz = insere_nodo(raiz, 40);
     raiz = insere_nodo(raiz, 50);
-    raiz = insere_nodo(raiz, 25);
+    raiz = insere_nodo(raiz, 45);
+    raiz = insere_nodo(raiz, 48);
 
     /*TESTA AS IMPRESSOES*/
-    printf("Em ordem: ");
+    printf("Em ordem:\n");
     em_ordem(raiz);
 
-    printf("\nPre ordem: ");
+    printf("\nPre ordem:\n");
     pre_ordem(raiz);
 
-    printf("\nPos ordem: ");
+    printf("\nPos ordem:\n");
     pos_ordem(raiz);
 
     /*FATOR DE BALANCEAMENTO*/
-    printf("\nFB em ordem: ");
+    printf("\nFB em ordem:\n");
     fb_ordem(raiz);
 
     /*TESTA A BUSCA*/
@@ -40,16 +41,16 @@ int main() {
     printf("\n\nRemovendo o 40...\n");
     raiz = remove_nodo(raiz, 40);
 
-    printf("\nEm ordem: ");
+    printf("\nEm ordem:\n");
     em_ordem(raiz);
 
-    printf("\nPre ordem: ");
+    printf("\nPre ordem:\n");
     pre_ordem(raiz);
 
-    printf("\nPos ordem: ");
+    printf("\nPos ordem:\n");
     pos_ordem(raiz);
 
-    printf("\nFB em ordem: ");
+    printf("\nFB em ordem:\n");
     fb_ordem(raiz);
 
     if (busca(raiz, 40) != NULL)

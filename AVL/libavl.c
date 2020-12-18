@@ -183,7 +183,7 @@ remove_nodo(nodo_t *nodo, int chave)
             } else { /* com um filho */
                 /* @todo se não funcionar tem que arrumar
                  * os ponteiros de pai e filho manualmente */
-                *nodo = *tmp;
+                nodo = tmp;
             }
 
             free(tmp);
@@ -198,6 +198,7 @@ remove_nodo(nodo_t *nodo, int chave)
 
     /*-----FAZ O BALANCEAMENTO----*/
 
+    /* if (NULL == nodo) return nodo; */
     nodo->fb = FATOR(nodo);
 
     /* caso esq-esq ou esq-dir */
@@ -217,11 +218,21 @@ remove_nodo(nodo_t *nodo, int chave)
     return nodo;
 }
 
+static int
+_nivel(nodo_t *nodo)
+{
+    int nivel = 0;
+    for ( ; nodo->pai != NULL ; nodo = nodo->pai )
+        ++nivel;
+
+    return nivel;
+}
+
 void 
 pre_ordem(nodo_t *nodo)
 {
     if (nodo != NULL){
-        printf("%d ", nodo->chave);
+        printf("%d,%d\n", nodo->chave, _nivel(nodo));
         pre_ordem(nodo->esq);
         pre_ordem(nodo->dir);
     }
@@ -232,7 +243,7 @@ em_ordem(nodo_t *nodo)
 {
     if (nodo != NULL){
         em_ordem(nodo->esq);
-        printf("%d ", nodo->chave);
+        printf("%d,%d\n", nodo->chave, _nivel(nodo));
         em_ordem(nodo->dir);
     }
 }
@@ -242,7 +253,7 @@ fb_ordem(nodo_t *nodo)
 {
     if (nodo != NULL){
         fb_ordem(nodo->esq);
-        printf("%d ", nodo->fb);
+        printf("%d,%d\n", nodo->chave, _nivel(nodo));
         fb_ordem(nodo->dir);
     }
 }
@@ -253,6 +264,6 @@ pos_ordem(nodo_t *nodo)
     if (nodo != NULL){
         pos_ordem(nodo->esq);
         pos_ordem(nodo->dir);
-        printf("%d ", nodo->chave);
+        printf("%d,%d\n", nodo->chave, _nivel(nodo));
     }
 }
