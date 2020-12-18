@@ -26,13 +26,9 @@ typedef struct nodo_s {
 } nodo_t;
 
 /*=-=-=-implementadas-=-=-=*/
-nodo_t *inicia_nodo(int chave);
-int altura(nodo_t *nodo);
 nodo_t *busca(nodo_t *nodo, int chave);
 nodo_t *min(nodo_t *nodo);
 nodo_t *max(nodo_t *nodo);
-nodo_t *rotaciona_dir(nodo_t *nodo);
-nodo_t *rotaciona_esq(nodo_t *nodo);
 nodo_t *insere_nodo(nodo_t *nodo, int chave);
 nodo_t *remove_nodo(nodo_t *nodo, int chave); 
 void pre_ordem(nodo_t *nodo);
@@ -40,7 +36,14 @@ void em_ordem(nodo_t *nodo);
 void pos_ordem(nodo_t *nodo);
 void fb_ordem(nodo_t *nodo);
 
-/*=-=-=-ainda nao implementadas-=-=-=*/
-/*void destroi_nodo(nodo_t *nodo);*/
+/* funções de uso interno
+static int _altura(nodo_t *nodo);
+static int _nivel(nodo_t *nodo);
+static nodo_t *_inicia_nodo(int chave);
+static nodo_t *_rotaciona_dir(nodo_t *nodo);
+static nodo_t *_rotaciona_esq(nodo_t *nodo);
+static nodo_t *_ajusta_avl(nodo_t *nodo, int chave);
+*/
+
 
 #endif

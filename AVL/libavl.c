@@ -1,13 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "libavl.h"
 
+
+static int
+_altura(nodo_t *nodo)
+{
+    if (NULL == nodo) return -1;
+
+    int h_esq = _altura(nodo->esq);
+    int h_dir = _altura(nodo->dir);
+
+    return 1 + (h_esq > h_dir ? h_esq : h_dir);
+}
+
 /* retorna fator balanceamento do nodo */
-#define FATOR(nodo) ((nodo) ? (altura(nodo->esq) - altura(nodo->dir)) : 0)
+#define FATOR(nodo) ((nodo) ? (_altura(nodo->esq) - _altura(nodo->dir)) : 0)
 
+static int
+_nivel(nodo_t *nodo)
+{
+    int nivel = 0;
+    for ( ; nodo->pai != NULL ; nodo = nodo->pai )
+        ++nivel;
 
-nodo_t*
-inicia_nodo(int chave)
+    return nivel;
+}
+
+static nodo_t*
+_inicia_nodo(int chave)
 {
     nodo_t *novo_nodo = malloc(sizeof *novo_nodo);
     DEBUG_ASSERT(NULL != novo_nodo, "Sem memória suficiente");
@@ -22,15 +44,74 @@ inicia_nodo(int chave)
     return novo_nodo;
 }
 
-int
-altura(nodo_t *nodo)
+static nodo_t*
+_rotaciona_dir(nodo_t *nodo)
 {
-    if (NULL == nodo) return -1;
+    nodo_t *tmp = nodo->esq;
 
-    int h_esq = altura(nodo->esq);
-    int h_dir = altura(nodo->dir);
+    nodo->esq = tmp->dir;
+    tmp->pai = nodo->pai;
+    nodo->pai = tmp;
 
-    return 1 + (h_esq > h_dir ? h_esq : h_dir);
+    if (tmp->dir != NULL)
+        tmp->dir->pai = nodo;
+
+    tmp->dir = nodo;
+
+    return tmp;
+}
+
+static nodo_t*
+_rotaciona_esq(nodo_t *nodo)
+{
+    nodo_t *tmp = nodo->dir;
+
+    nodo->dir = tmp->esq;
+    tmp->pai = nodo->pai;
+    nodo->pai = tmp;
+
+    if (tmp->esq != NULL)
+        tmp->esq->pai = nodo;
+
+    tmp->esq = nodo;
+
+    return tmp;
+}
+
+static nodo_t*
+_ajusta_avl(nodo_t *nodo, int chave)
+{
+    nodo_t *nodo_ajuste;
+
+    /* 4 casos de desbalanceamento */
+
+    /* caso esq-esq ou esq-dir */
+    if (nodo->fb > 1){ 
+        if (chave > nodo->esq->chave) /* caso esq-dir */
+            nodo->esq = _rotaciona_esq(nodo->esq);
+        nodo_ajuste = _rotaciona_dir(nodo);
+    }
+
+    /* caso dir-dir ou dir-esq */
+    if (nodo->fb < -1){ 
+        if (chave < nodo->dir->chave) /* caso dir-esq */
+            nodo->dir = _rotaciona_dir(nodo->dir);
+        nodo_ajuste = _rotaciona_esq(nodo);
+    }
+
+    /* arruma o nodo pai */
+    if(nodo_ajuste->pai != NULL){
+        if(nodo == nodo_ajuste->pai->esq)
+            nodo_ajuste->pai->esq = nodo_ajuste;
+        else
+            nodo_ajuste->pai->dir = nodo_ajuste;
+    }
+
+    nodo_ajuste->fb = 0;
+    nodo_ajuste->esq->fb = FATOR(nodo_ajuste->esq);
+    nodo_ajuste->dir->fb = FATOR(nodo_ajuste->dir);
+
+    return nodo_ajuste;
 }
 
 nodo_t*
@@ -65,80 +146,10 @@ max(nodo_t *nodo)
 }
 
 nodo_t*
-rotaciona_dir(nodo_t *nodo)
-{
-    nodo_t *tmp = nodo->esq;
-
-    nodo->esq = tmp->dir;
-    tmp->pai = nodo->pai;
-    nodo->pai = tmp;
-
-    if (tmp->dir != NULL)
-        tmp->dir->pai = nodo;
-
-    tmp->dir = nodo;
-
-    return tmp;
-}
-
-nodo_t*
-rotaciona_esq(nodo_t *nodo)
-{
-    nodo_t *tmp = nodo->dir;
-
-    nodo->dir = tmp->esq;
-    tmp->pai = nodo->pai;
-    nodo->pai = tmp;
-
-    if (tmp->esq != NULL)
-        tmp->esq->pai = nodo;
-
-    tmp->esq = nodo;
-
-    return tmp;
-}
-
-nodo_t*
-ajusta_avl(nodo_t *nodo, int chave)
-{
-    nodo_t *nodo_ajuste;
-
-    /* 4 casos de desbalanceamento */
-
-    /* caso esq-esq ou esq-dir */
-    if (nodo->fb > 1){ 
-        if (chave > nodo->esq->chave) /* caso esq-dir */
-            nodo->esq = rotaciona_esq(nodo->esq);
-        nodo_ajuste = rotaciona_dir(nodo);
-    }
-
-    /* caso dir-dir ou dir-esq */
-    if (nodo->fb < -1){ 
-        if (chave < nodo->dir->chave) /* caso dir-esq */
-            nodo->dir = rotaciona_dir(nodo->dir);
-        nodo_ajuste = rotaciona_esq(nodo);
-    }
-
-    /* arruma o nodo pai */
-    if(nodo_ajuste->pai != NULL){
-        if(nodo == nodo_ajuste->pai->esq)
-            nodo_ajuste->pai->esq = nodo_ajuste;
-        else
-            nodo_ajuste->pai->dir = nodo_ajuste;
-    }
-
-    nodo_ajuste->fb = 0;
-    nodo_ajuste->esq->fb = FATOR(nodo_ajuste->esq);
-    nodo_ajuste->dir->fb = FATOR(nodo_ajuste->dir);
-
-    return nodo_ajuste;
-}
-
-nodo_t*
 insere_nodo(nodo_t *nodo, int chave)
 {
     /* inserção normal BST */
-    if (NULL == nodo) return inicia_nodo(chave);
+    if (NULL == nodo) return _inicia_nodo(chave);
 
     if (chave < nodo->chave){
         nodo->esq = insere_nodo(nodo->esq, chave);
@@ -154,7 +165,7 @@ insere_nodo(nodo_t *nodo, int chave)
 
     /* balancear sub-árvore se estiver desbalanceada */
     if ((nodo->fb > 1) || (nodo->fb < -1))
-        nodo = ajusta_avl(nodo, chave);
+        nodo = _ajusta_avl(nodo, chave);
 
     return nodo;
 }
@@ -196,36 +207,27 @@ remove_nodo(nodo_t *nodo, int chave)
         }
     }
 
+    if (NULL == nodo) return nodo;
+
     /*-----FAZ O BALANCEAMENTO----*/
 
-    /* if (NULL == nodo) return nodo; */
     nodo->fb = FATOR(nodo);
 
     /* caso esq-esq ou esq-dir */
     if (nodo->fb > 1){
         if (FATOR(nodo->esq) < 0) /* caso esq-dir */
-            nodo->esq = rotaciona_esq(nodo->esq);
-        return rotaciona_dir(nodo);
+            nodo->esq = _rotaciona_esq(nodo->esq);
+        return _rotaciona_dir(nodo);
     }
 
     /* caso dir-dir ou dir-esq */
     if (nodo->fb < -1){
         if (FATOR(nodo->dir) > 0) /* caso dir-esq */
-            nodo->dir = rotaciona_dir(nodo->dir);
-        return rotaciona_dir(nodo);
+            nodo->dir = _rotaciona_dir(nodo->dir);
+        return _rotaciona_dir(nodo);
     }
 
     return nodo;
-}
-
-static int
-_nivel(nodo_t *nodo)
-{
-    int nivel = 0;
-    for ( ; nodo->pai != NULL ; nodo = nodo->pai )
-        ++nivel;
-
-    return nivel;
 }
 
 void 
@@ -253,7 +255,7 @@ fb_ordem(nodo_t *nodo)
 {
     if (nodo != NULL){
         fb_ordem(nodo->esq);
-        printf("%d,%d\n", nodo->chave, _nivel(nodo));
+        printf("%d:\t%d,%d\n", nodo->fb, nodo->chave, _nivel(nodo));
         fb_ordem(nodo->dir);
     }
 }
