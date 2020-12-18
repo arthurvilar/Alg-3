@@ -25,9 +25,11 @@ nodo_t *max(nodo_t *nodo);
 nodo_t *rotaciona_dir(nodo_t *nodo);
 nodo_t *rotaciona_esq(nodo_t *nodo);
 nodo_t *insere_nodo(nodo_t *nodo, int chave);
+nodo_t *remove_nodo(nodo_t *nodo, int chave); 
 void pre_ordem(nodo_t *nodo);
 void em_ordem(nodo_t *nodo);
 void pos_ordem(nodo_t *nodo);
+void fb_ordem(nodo_t *nodo);
 
 /*=-=-=-ainda nao implementadas-=-=-=*/
 /*void destroi_nodo(nodo_t *nodo);*/

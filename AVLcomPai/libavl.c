@@ -175,6 +175,74 @@ insere_nodo(nodo_t *nodo, int chave)
     return nodo;
 }
 
+nodo_t*
+remove_nodo(nodo_t *nodo, int chave)
+{
+    if(nodo == NULL)
+        return nodo;
+
+    /*-----FAZ A REMOÇÃO----*/
+
+    //se chave menor continua a busca na esquerda
+    if(chave < nodo->chave)
+        nodo->esq = remove_nodo(nodo->esq, chave);
+
+    //se chave maior continua a busca na direita
+    else if(chave > nodo->chave)
+        nodo->dir = remove_nodo(nodo->dir, chave);
+
+    //se chave igual a do nodo (achou o nodo) faz a remoção
+    else{
+        //nodo com zero ou um filho
+        if((nodo->esq == NULL) || (nodo->dir) == NULL){
+            nodo_t *tmp = nodo->esq ? nodo->esq : nodo->dir;
+
+            //sem filho
+            if(tmp == NULL){
+                tmp = nodo;
+                nodo = NULL;
+            }
+            //com um filho
+            else{
+                *nodo = *tmp; //*****SE NAO FUNCIONAR TEM QUE ARRUMAR OS PONTEIROS DE PAI E FILHO MANUALMENTE
+            }
+
+            free(tmp);
+        }
+        //nodo com dois filhos
+        else{
+            nodo_t *sucessor = min(nodo->dir);
+
+            nodo->chave = sucessor->chave;
+            nodo->dir = remove_nodo(nodo->dir, sucessor->chave);
+        }
+    }
+
+    /*-----FAZ O BALANCEAMENTO----*/
+
+    nodo->fb = altura(nodo->esq) - altura(nodo->dir);
+
+    if(nodo->fb == 2 || nodo->fb == -2){
+        if(nodo->fb > 1 && (altura(nodo->esq->esq) - altura(nodo->esq->dir) >= 0))
+            return rotaciona_dir(nodo);
+
+        else if(nodo->fb > 1 && (altura(nodo->esq->esq) - altura(nodo->esq->dir) < 0)){
+            nodo->esq = rotaciona_esq(nodo->esq);
+            return rotaciona_dir(nodo);
+        }
+
+        if(nodo->fb < -1 && (altura(nodo->dir->esq) - altura(nodo->dir->dir) <= 0))
+            return rotaciona_dir(nodo);
+
+        else if(nodo->fb < -1 && (altura(nodo->dir->esq) - altura(nodo->dir->dir) > 0)){
+            nodo->dir = rotaciona_dir(nodo->dir);
+            return rotaciona_esq(nodo);
+        }
+    }
+
+    return nodo;
+}
+
 void 
 pre_ordem(nodo_t *nodo)
 {
@@ -192,6 +260,17 @@ em_ordem(nodo_t *nodo)
         em_ordem(nodo->esq);
         printf("%d ", nodo->chave);
         em_ordem(nodo->dir);
+    }
+}
+
+void 
+fb_ordem(nodo_t *nodo)
+{
+    if (nodo != NULL)
+    {
+        fb_ordem(nodo->esq);
+        printf("%d ", nodo->fb);
+        fb_ordem(nodo->dir);
     }
 }
 
