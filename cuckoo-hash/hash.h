@@ -9,7 +9,6 @@ typedef struct hashtable_s {
   size_t size; // tamanho das tables
 } hashtable_t;
 
-int* initTable(size_t size);
 hashtable_t initHashtable(size_t size);
 void freeHashtable(hashtable_t ht);
 

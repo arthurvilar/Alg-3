@@ -8,7 +8,7 @@
 #define FREE -1 // valor inicial, espaço ainda não usado
 #define DEL -2  // valor para espaço que teve chave removida
 
-int* 
+static int* 
 initTable(size_t size) 
 {
     int *new_t = malloc(size * sizeof(int));
@@ -71,7 +71,7 @@ insert(int key, hashtable_t ht)
         return; /* RETORNO ANTECIPADO */
     }
 
-    if (h1(ht.t1[pos1], ht.size) == pos1) { // colisão em T1
+    if (pos1 == h1(ht.t1[pos1], ht.size)) { // colisão em T1
         if (key == ht.t1[pos1])
             return; // se chave nova e antiga sao iguais ignora
 
