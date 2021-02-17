@@ -73,7 +73,7 @@ insert(int key, hashtable_t ht)
 
     if (pos1 == h1(ht.t1[pos1], ht.size)) { // colisão em T1
         if (key == ht.t1[pos1])
-            return; // se chave nova e antiga sao iguais ignora
+            return; /* RETORNO ANTECIPADO (chave nova e antiga sao iguais) */
 
         // inserção na t2
         int temp = ht.t1[pos1];
