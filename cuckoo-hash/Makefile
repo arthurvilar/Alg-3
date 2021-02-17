@@ -1,4 +1,4 @@
-EXEC := run
+EXEC := myht
 
 CC := gcc
 CFLAGS := -Wall -Werror -Wextra -pedantic -g
@@ -7,10 +7,11 @@ CFLAGS := -Wall -Werror -Wextra -pedantic -g
 
 all : $(EXEC)
 
-$(EXEC) : hash.o
+$(EXEC) : hash.o main.o
+	$(CC) $(CFLAGS) -o $@ $^ -lm
 
 clean:
 	rm -f $(EXEC)
 
 purge : clean
-	rm -f hash.o
+	rm -f *.o
