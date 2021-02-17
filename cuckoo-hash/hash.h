@@ -1,8 +1,6 @@
 #ifndef __HASH__
 #define __HASH__
 
-#define SIZE 11
-
 typedef struct hashtable_s {
   int *t1; // table 1
   int *t2; // table 2
