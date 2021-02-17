@@ -5,6 +5,8 @@
 
 #include "hash.h"
 
+#define FREE -1 // valor inicial, espaço ainda não usado
+#define DEL -2  // valor para espaço que teve chave removida
 
 int* 
 initTable(size_t size) 
@@ -66,16 +68,17 @@ insert(int key, hashtable_t ht)
     // inserção na t1
     if (ht.t1[pos1] == FREE || ht.t1[pos1] == DEL) {
         ht.t1[pos1] = key;
+        return; /* RETORNO ANTECIPADO */
     }
-    else if (h1(ht.t1[pos1], ht.size) == pos1) { // colisão em T1
+
+    if (h1(ht.t1[pos1], ht.size) == pos1) { // colisão em T1
+        if (key == ht.t1[pos1])
+            return; // se chave nova e antiga sao iguais ignora
+
+        // inserção na t2
         int temp = ht.t1[pos1];
-        
-        if (key == ht.t1[pos1]) { // se chave nova e antiga sao iguais ignora
-            return;
-        } else { // inserção na t2
-            ht.t1[pos1] = key;
-            ht.t2[h2(temp, ht.size)] = temp;
-        }
+        ht.t1[pos1] = key;
+        ht.t2[h2(temp, ht.size)] = temp;
     }
 }
 
@@ -85,10 +88,13 @@ delete(int key, hashtable_t ht)
     int pos1 = h1(key, ht.size);
     if (ht.t1[pos1] == key) { // confere se o valor ta na t1
         ht.t1[pos1] = DEL;
+        return; /* RETORNO ANTECIPADO */
     }
-    else if (ht.t1[pos1] != FREE) {
+
+    if (ht.t1[pos1] != FREE) {
         int pos2 = h2(key, ht.size);
-        if (ht.t2[pos2] == key) // confere se o valor ta na t2
+        if (ht.t2[pos2] == key) { // confere se o valor ta na t2
             ht.t2[pos2] = DEL;
+        }
     }
 }

@@ -2,6 +2,7 @@
 #define __HASH__
 
 #define SIZE 11
+
 #define FREE -1     // valor inicial, espaço ainda não usado
 #define DEL -2      // valor para espaço que teve chave removida
 
