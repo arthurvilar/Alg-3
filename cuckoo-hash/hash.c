@@ -116,3 +116,25 @@ delete(int key, hashtable_t ht)
         }
     }
 }
+
+void 
+print_ht(hashtable_t ht)
+{
+    size_t i;
+
+    // Tabela 1
+    for (i = 0; i < ht.size; i++) {
+        if (ht.t1[i] != -1 && ht.t1[i] != -2) {
+            printf("%d,T1,%ld\n", ht.t1[i], i);
+        }
+    }
+
+    // Tabela 2
+    for (i = 0; i < ht.size; i++)
+    {
+        if (ht.t2[i] != -1 && ht.t2[i] != -2)
+        {
+            printf("%d,T2,%ld\n", ht.t2[i], i);
+        }
+    }
+}

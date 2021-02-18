@@ -25,4 +25,6 @@ int h2(int key, size_t size);
 void insert(int key, hashtable_t ht);
 void delete(int key, hashtable_t ht);
 
+void print_ht(hashtable_t ht);
+
 #endif // __HASH__

@@ -35,6 +35,8 @@ int main()
         }
     }
 
+    print_ht(ht);
+
     free(inputs); // libera entradas obtidas
     freeHashtable(ht); // libera campos t1 e t2 da memória
 
