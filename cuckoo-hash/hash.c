@@ -124,14 +124,13 @@ print_ht(hashtable_t ht)
     // Tabela 2
     for (i = ht.size-1; i >= 0; --i) {
         if (ht.t2[i] != FREE && ht.t2[i] != DEL) {
-            printf("%d,T2,%ld ", ht.t2[i], i);
+            printf("%d,T2,%ld\n", ht.t2[i], i);
         }
     }
     // Tabela 1
     for (i = ht.size-1; i >= 0; --i) {
         if (ht.t1[i] != FREE && ht.t1[i] != DEL) {
-            printf("%d,T1,%ld ", ht.t1[i], i);
+            printf("%d,T1,%ld\n", ht.t1[i], i);
         }
     }
-    putchar('\n');
 }
