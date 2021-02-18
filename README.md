@@ -10,3 +10,7 @@ http://www.inf.ufpr.br/eduardo/ensino/ci057/2020-2/trab1/trab.html
 
 
 ## Project 2:
+
+Basic implementation of Cuckoo Hash in C.
+
+http://www.inf.ufpr.br/eduardo/ensino/ci057/2020-2/trab2/trab_hash.html
