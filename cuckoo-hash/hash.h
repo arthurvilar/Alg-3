@@ -1,11 +1,20 @@
 #ifndef __HASH__
 #define __HASH__
 
-typedef struct hashtable_s {
-  int *t1; // table 1
-  int *t2; // table 2
-  size_t size; // tamanho das tables
+typedef struct hashtable_s 
+{
+  int *t1;      // table 1
+  int *t2;      // table 2
+  size_t size;  // tamanho das tables
 } hashtable_t;
+
+typedef struct input_s
+{
+  int key;      // valor a ser inserido ou removido na hashtable
+  char action;  // i (INSERE); r (REMOVE); '\0' (INATIVO)
+} input_t;
+
+input_t * getInputs(size_t size);
 
 hashtable_t initHashtable(size_t size);
 void freeHashtable(hashtable_t ht);

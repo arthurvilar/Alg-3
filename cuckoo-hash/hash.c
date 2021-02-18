@@ -1,12 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h> // para floor()
+#include <string.h>     // para strchr()
+#include <math.h>       // para floor()
 #include <assert.h>
 
 #include "hash.h"
 
 #define FREE -1 // valor inicial, espaço ainda não usado
 #define DEL -2  // valor para espaço que teve chave removida
+
+
+/* deserialização do conteúdo dos arquivos de entrada para um array de
+ *  struct input_s contendo chaves e instruções */
+input_t *
+getInputs(size_t size)
+{
+    input_t *inputs = calloc(1, size * sizeof(input_t));
+    if (NULL == inputs)
+        return NULL;
+
+    char line[256]; // tamanho mais que o suficiente
+    for (size_t i = 0; i < size; ++i)
+    {
+        if (NULL == fgets(line, sizeof(line) - 1, stdin)) // obtem linha atual da entrada
+            break;                                        // BREAK ANTECIPADO (não há mais linhas a serem lidas)
+
+        inputs[i].action = line[0]; // ação é o primeiro char da linha
+
+        char *strkey = 1 + strchr(line, ' ');          // obtem posicao do key no string
+        inputs[i].key = (int)strtol(strkey, NULL, 10); // converte key do input para int
+    }
+
+    return inputs;
+}
 
 static int* 
 initTable(size_t size) 
@@ -52,14 +78,6 @@ h2(int key, size_t size) {
     return (floor(size * ((key * 0.9) - floor(key * 0.9))));
 }
 
-/* 
-    a inserção é sempre na t1.
-    primeiro checa se a posição h1(key) esta disponivel na t1,
-    se estiver insere, se não, houve uma colisão,
-    então insere o valor que ta na posição h1(key) de t1
-    na posição h2(t1[h1]) na t2,
-    e depois insere key em t1[h1(key)] 
-*/
 void 
 insert(int key, hashtable_t ht) 
 {
