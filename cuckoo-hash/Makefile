@@ -1,17 +1,23 @@
-EXEC := myht
-
-CC := gcc
 CFLAGS := -Wall -Werror -Wextra -pedantic -g
 
-.PHONY: all clean purge
+# regra default 
+all : myht
 
-all : $(EXEC)
+# regras de ligação
+myht : main.o hash.o
+	gcc $(CFLAGS) main.o hash.o -o myht -lm
 
-$(EXEC) : hash.o main.o
-	$(CC) $(CFLAGS) -o $@ $^ -lm
+# regras de compilação
+main.o : main.c hash.h
+	gcc $(CFLAGS) -c main.c
 
+hash.o : hash.c hash.h
+	gcc $(CFLAGS) -c hash.c
+
+# remove arquivos temporários
 clean:
-	rm -f $(EXEC)
+	-rm -f *~ *.o
 
+# remove tudo que não é o código-fonte original
 purge : clean
-	rm -f *.o
+	-rm -f myht
