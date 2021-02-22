@@ -81,14 +81,16 @@ h2(int key, size_t size) {
 int
 lookup(int key, hashtable_t ht)
 {
+    // procura na t1
     if (ht.t1[h1(key, ht.size)] == key) {
         return h1(key, ht.size);
     }
+    // procura na t2
     else if (ht.t2[h2(key, ht.size)] == key) {
         return h2(key, ht.size);
     }
 
-    return NULL;
+    return FREE;
 }
 
 void 

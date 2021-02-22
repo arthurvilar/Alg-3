@@ -22,10 +22,10 @@ void freeHashtable(hashtable_t ht);
 int h1(int key, size_t size);
 int h2(int key, size_t size);
 
-int lookup(int key, hashtable_t ht);
+int lookup(int key, hashtable_t ht);    // retorna a posição que a chave está, se não retorna FREE
 void insert(int key, hashtable_t ht);
 void delete(int key, hashtable_t ht);
 
 void print_ht(hashtable_t ht);
 
-#endif // __HASH__
+#endif 
