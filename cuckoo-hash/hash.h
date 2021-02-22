@@ -22,6 +22,7 @@ void freeHashtable(hashtable_t ht);
 int h1(int key, size_t size);
 int h2(int key, size_t size);
 
+int lookup(int key, hashtable_t ht);
 void insert(int key, hashtable_t ht);
 void delete(int key, hashtable_t ht);
 

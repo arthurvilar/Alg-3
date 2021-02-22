@@ -78,6 +78,19 @@ h2(int key, size_t size) {
     return floor(size * ((key * 0.9) - floor(key * 0.9)));
 }
 
+int
+lookup(int key, hashtable_t ht)
+{
+    if (ht.t1[h1(key, ht.size)] == key) {
+        return h1(key, ht.size);
+    }
+    else if (ht.t2[h2(key, ht.size)] == key) {
+        return h2(key, ht.size);
+    }
+
+    return NULL;
+}
+
 void 
 insert(int key, hashtable_t ht) 
 {
