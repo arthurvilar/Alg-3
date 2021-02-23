@@ -159,14 +159,15 @@ print_ht(hashtable_t ht)
          if (ht.t1[i] != DEL && ht.t1[i] != FREE) {
              htelems[n_elem].value = ht.t1[i]; //recebe elemento da t1 e incrementa n_elem
              htelems[n_elem].tag = TABELA1;
+             htelems[n_elem].pos = i;
              ++n_elem;
          }
          if (ht.t2[i] != DEL && ht.t2[i] != FREE) {
              htelems[n_elem].value = ht.t2[i]; //recebe elemento da t2 e incrementa n_elem
              htelems[n_elem].tag = TABELA2;
+             htelems[n_elem].pos = i;
              ++n_elem;
          }
-         htelems[n_elem].pos = i;
     }
     qsort(htelems, n_elem, sizeof(struct ht_print_s), &intcmp); //ordena os elementos
 
@@ -174,10 +175,10 @@ print_ht(hashtable_t ht)
     for (size_t i=0; i < n_elem; ++i) {
         switch (htelems[i].tag) {
         case TABELA1:
-            printf("%d,T1,%d\n", htelems[i].value, 1+htelems[i].pos);
+            printf("%d,T1,%d\n", htelems[i].value, htelems[i].pos);
             break;
         case TABELA2:
-            printf("%d,T2,%d\n", htelems[i].value, 1+htelems[i].pos);
+            printf("%d,T2,%d\n", htelems[i].value, htelems[i].pos);
             break;
         default:
             abort();
