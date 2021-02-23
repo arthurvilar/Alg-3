@@ -146,16 +146,16 @@ print_ht(hashtable_t ht)
     /* insere todos os elementos das tabelas em uma array 'htelems' */
     size_t n_elem=0; //obter total de elementos a serem ordenados
     for (size_t i=0; i < ht.size; ++i) {
-      if (ht.t1[i] != DEL && ht.t1[i] != FREE)
-        htelems[n_elem++] = ht.t1[i]; //recebe elemento da t1 e incrementa n_elem
-      if (ht.t2[i] != DEL && ht.t2[i] != FREE)
-        htelems[n_elem++] = ht.t2[i]; //recebe elemento da t2 e incrementa n_elem
+       if (ht.t1[i] != DEL && ht.t1[i] != FREE)
+          htelems[n_elem++] = ht.t1[i]; //recebe elemento da t1 e incrementa n_elem
+       if (ht.t2[i] != DEL && ht.t2[i] != FREE)
+          htelems[n_elem++] = ht.t2[i]; //recebe elemento da t2 e incrementa n_elem
     }
     qsort(htelems, n_elem, sizeof(int), &intcmp); //ordena os elementos
 
     /* imprime os elementos ordenados */
     for (size_t i=0; i < n_elem; ++i) {
-      printf("%d\n", htelems[i]);
+        printf("%d\n", htelems[i]);
     }
 
     free(htelems);
