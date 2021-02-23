@@ -9,6 +9,13 @@
 #define FREE -1 // valor inicial, espaço ainda não usado
 #define DEL -2  // valor para espaço que teve chave removida
 
+enum table_tag { TABELA1, TABELA2 };
+struct ht_print_s { // utilizado para printar hashtable ordenada
+  int value;
+  int pos; // indice em sua tabela
+  enum table_tag tag; // a qual tabela pertence
+}; 
+
 
 /* deserialização do conteúdo dos arquivos de entrada para um array de
  *  struct input_s contendo chaves e instruções */
@@ -133,29 +140,48 @@ delete(int key, hashtable_t ht)
 }
 
 static int
-intcmp(const void *a, const void *b) {
-  return *(int *)a - *(int *)b;
+intcmp(const void *a, const void *b) 
+{
+  struct ht_print_s *ha = (struct ht_print_s*)a;
+  struct ht_print_s *hb = (struct ht_print_s*)b;
+  return ha->value - hb->value;
 }
 
 void 
 print_ht(hashtable_t ht)
 {
-    int *htelems = malloc(2*ht.size * sizeof(int));
+    struct ht_print_s *htelems = malloc(2*ht.size * sizeof(struct ht_print_s));
     assert(NULL != htelems);
 
     /* insere todos os elementos das tabelas em uma array 'htelems' */
     size_t n_elem=0; //obter total de elementos a serem ordenados
     for (size_t i=0; i < ht.size; ++i) {
-       if (ht.t1[i] != DEL && ht.t1[i] != FREE)
-          htelems[n_elem++] = ht.t1[i]; //recebe elemento da t1 e incrementa n_elem
-       if (ht.t2[i] != DEL && ht.t2[i] != FREE)
-          htelems[n_elem++] = ht.t2[i]; //recebe elemento da t2 e incrementa n_elem
+         if (ht.t1[i] != DEL && ht.t1[i] != FREE) {
+             htelems[n_elem].value = ht.t1[i]; //recebe elemento da t1 e incrementa n_elem
+             htelems[n_elem].tag = TABELA1;
+             ++n_elem;
+         }
+         if (ht.t2[i] != DEL && ht.t2[i] != FREE) {
+             htelems[n_elem].value = ht.t2[i]; //recebe elemento da t2 e incrementa n_elem
+             htelems[n_elem].tag = TABELA2;
+             ++n_elem;
+         }
+         htelems[n_elem].pos = i;
     }
-    qsort(htelems, n_elem, sizeof(int), &intcmp); //ordena os elementos
+    qsort(htelems, n_elem, sizeof(struct ht_print_s), &intcmp); //ordena os elementos
 
     /* imprime os elementos ordenados */
     for (size_t i=0; i < n_elem; ++i) {
-        printf("%d\n", htelems[i]);
+        switch (htelems[i].tag) {
+        case TABELA1:
+            printf("%d,T1,%d\n", htelems[i].value, 1+htelems[i].pos);
+            break;
+        case TABELA2:
+            printf("%d,T2,%d\n", htelems[i].value, 1+htelems[i].pos);
+            break;
+        default:
+            abort();
+        }
     }
 
     free(htelems);
